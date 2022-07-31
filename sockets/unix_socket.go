@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 /*
@@ -123,4 +124,9 @@ func NewUnixSocketWithOpts(path string, opts ...SockOption) (net.Listener, error
 // NewUnixSocket creates a unix socket with the specified path and group.
 func NewUnixSocket(path string, gid int) (net.Listener, error) {
 	return NewUnixSocketWithOpts(path, WithChown(0, gid), WithChmod(0660))
+}
+
+// NewUnixSocketA add uid
+func NewUnixSocketA(path string, uid, gid int) (net.Listener, error) {
+	return NewUnixSocketWithOpts(path, WithChown(uid, gid), WithChmod(0660))
 }
