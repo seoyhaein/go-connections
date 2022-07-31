@@ -6,22 +6,30 @@ import (
 	"net"
 	"os"
 
+	sddaemon "github.com/coreos/go-systemd/v22/daemon"
 	"github.com/seoyhaein/go-connections/sockets"
+	"github.com/seoyhaein/utils"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
 
-func ServeGRPC(cfg config.GRPCConfig, server *grpc.Server, errCh chan error) error {
+// TODO 살펴 보자. tls 도 지원해줘야 한다. 책 참고.
+// https://hamait.tistory.com/931 살펴보고, service 등록하고, sddaemon 기능 파악하자.
+// errgroup 기 능파악하자.
+
+func ServeGRPC(cfg GRPCConfig, server *grpc.Server, errCh chan error) error {
 	addrs := cfg.Address
-	if len(addrs) == 0 {
+	//if len(addrs) == 0 {
+	if utils.IsEmptyString {
 		return errors.New("--addr cannot be empty")
 	}
 
-	//tlsConfig, err := serverCredentials(cfg.TLS)
-	if err != nil {
-		return err
-	}
+	/*	tlsConfig, err := serverCredentials(cfg.TLS)
+		if err != nil {
+			return err
+		}*/
+
 	eg, _ := errgroup.WithContext(context.Background())
 	listeners := make([]net.Listener, 0, len(addrs))
 	for _, addr := range addrs {
@@ -51,5 +59,9 @@ func ServeGRPC(cfg config.GRPCConfig, server *grpc.Server, errCh chan error) err
 	go func() {
 		errCh <- eg.Wait()
 	}()
+	return nil
+}
+
+func ServeGRPCTls(cfg GRPCConfig, server *grpc.Server, errCh chan error) error {
 	return nil
 }
