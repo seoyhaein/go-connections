@@ -8,7 +8,6 @@ import (
 
 	sddaemon "github.com/coreos/go-systemd/v22/daemon"
 	"github.com/seoyhaein/go-connections/sockets"
-	"github.com/seoyhaein/utils"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -19,9 +18,10 @@ import (
 // errgroup 기 능파악하자.
 
 func ServeGRPC(cfg GRPCConfig, server *grpc.Server, errCh chan error) error {
+	// TODO 살펴보자.
 	addrs := cfg.Address
-	//if len(addrs) == 0 {
-	if utils.IsEmptyString {
+	if len(addrs) == 0 {
+		//if utils.IsEmptyString(addrs) {
 		return errors.New("--addr cannot be empty")
 	}
 
